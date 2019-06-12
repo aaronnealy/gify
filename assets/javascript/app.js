@@ -17,15 +17,27 @@ $("button").on("click", function() {
       method: "GET"
     }).then(function(response) {
     console.log(response)
-    console.log(response.data[0])
-    console.log(response.data[0].rating)
+    
 
       var results = response.data
 
       for (let i = 0; i < results.length; i++) {
-          var topicDiv = $("<div>");
-          
-          
+        var topicDiv = $("<div>");
+
+        var rating = results[i].rating;
+         var p = $("<p>").text("Rating: " + rating);
+         console.log(rating)
+
+         // Make an image tag with jQuery and store it in a variable named animalImage.
+         var topicImage = $("<img>");
+         topicImage.attr("src", results[i].images.fixed_height.url)
+
+         // Append the p variable to the animalDiv variable.
+        topicDiv.append(p);
+        // Append the animalImage variable to the animalDiv variable.
+        topicDiv.append(topicImage);
+        // Prepend the animalDiv variable to the element with an id of gifs-appear-here.
+        $("#gifs-appear-here").prepend(topicDiv);
       }
 
     // Ajax call here / make sure to use the correct API key
