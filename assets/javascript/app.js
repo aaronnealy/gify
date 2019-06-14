@@ -1,7 +1,7 @@
 //Create an array of strings related to a topic of my interests.
 
 
-var topicsArr = ["Pizza", "Tacos", "Sushi", "Pasta", "French Fries"];
+var topicsArr = ["Pizza", "Tacos", "Sushi", "Pasta", "French-Fries"];
 console.log(topicsArr);
 
 var apiKey = "W2rfdCIplPQR1xAHGGIkKCxv1XxMx2V"
@@ -11,7 +11,7 @@ $("button").on("click", function() {
     var topic = $(this).attr("data-topic");
     var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
       topic + "&api_key=W2rfdCIplPQR1xAHGGIkKCxv1XxMx2V2&limit=10";
-    // var queryURL = "https://api.giphy.com/v1/gifs/random?api_key=W2rfdCIplPQR1xAHGGIkKCxv1XxMx2V2&tag=&rating=G"
+    
     $.ajax({
       url: queryURL,
       method: "GET"
@@ -26,27 +26,95 @@ $("button").on("click", function() {
 
         var rating = results[i].rating;
          var p = $("<p>").text("Rating: " + rating);
-         console.log(rating)
+        //  console.log(rating)
 
-         // Make an image tag with jQuery and store it in a variable named animalImage.
+         
          var topicImage = $("<img>");
          topicImage.attr("src", results[i].images.fixed_height.url)
+            topicImage.attr("data-state")
+            topicImage.attr("data-still")
+            topicImage.attr("data-animate")
+            
+            //
 
-         // Append the p variable to the animalDiv variable.
+         
         topicDiv.append(p);
-        // Append the animalImage variable to the animalDiv variable.
+        
         topicDiv.append(topicImage);
-        // Prepend the animalDiv variable to the element with an id of gifs-appear-here.
+        
         $("#gifs-appear-here").prepend(topicDiv);
+
+       
       }
-
-    // Ajax call here / make sure to use the correct API key
-    // ;
     
+})
 
+})
+var newTopicArr = []
+function renderButtons() {
+    $("#buttons-view").empty();
+    // Delete the content inside the buttons-view div prior to adding new movies
+    // (this is necessary otherwise you will have repeat buttons)
+    for (var i = 0; i < newTopicArr.length; i++) {
+      var topicBtn = $("<button>");
+      topicBtn.text(newTopicArr[i]);
+      topicBtn.attr("class", "topic-btn");
+      topicBtn.attr("data-topic", newTopicArr[i])
+      // movieBtn.addClass("movie-btn");
+      $("#buttons-view").append(topicBtn)
+    }
+    // Loop through the array of movies, then generate buttons for each movie in the array
+  }
+  $(document).on("click", ".topic-btn", function (e) {
+    var topic = $(this).attr("data-topic");
    
+    var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+      topic+ "&api_key=W2rfdCIplPQR1xAHGGIkKCxv1XxMx2V2&limit=10";
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function (response) {
+        console.log(response.data)
+        
+        var img= response.data
+        
+        
+        for (let i = 0; i < img.length; i++) {
+            var topicDiv2 = $("<div>");
+
+            var rating = img[i].rating;
+             var p = $("<p>").text("Rating: " + rating);
+            //  console.log(rating)
     
-})
-})
-    // Write code between the dashes below to hit the queryURL with $ajax, then take the response data
-    // and display it in the div with an id of movie-
+             //before I added lines 91-95, when I would console.log response.data for "hotdog", I would see links for hotdog gifs 
+             //but they would not appear on the web page. 
+             //After adding these lines, gifs appeared on the web page, but they were not related to the topic.
+             var topicImage = $("<img>");
+             topicImage.attr("src", img[i].images.fixed_height.url);
+
+             topicDiv2.append(p);
+      
+            topicDiv2.append(topicImage);
+
+        $("#gifs-appear-here").prepend(topicDiv2);
+    }
+        
+      })
+
+  })
+  
+  $("#add-topic").on("click", function (event) {
+    
+    event.preventDefault();
+
+    var userTopic = $("#topic-input").val();
+    
+    newTopicArr.push(userTopic)
+   
+    renderButtons();
+
+    
+  });
+  // Calling the renderButtons function to display the initial list of topics
+  renderButtons();
+    
